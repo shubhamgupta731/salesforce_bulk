@@ -21,13 +21,13 @@ module SalesforceBulk
 
     def create_job()
       xml = "#{@@XML_HEADER}<jobInfo xmlns=\"http://www.force.com/2009/06/asyncapi/dataload\">"
-      if @@serial
-        xml += "<concurrencyMode>Serial</concurrencyMode>"
-      end
       xml += "<operation>#{@@operation}</operation>"
       xml += "<object>#{@@sobject}</object>"
       if !@@external_field.nil? # This only happens on upsert
         xml += "<externalIdFieldName>#{@@external_field}</externalIdFieldName>"
+      end
+      if @@serial
+        xml += "<concurrencyMode>Serial</concurrencyMode>"
       end
       xml += "<contentType>CSV</contentType>"
       xml += "</jobInfo>"
