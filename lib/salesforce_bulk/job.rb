@@ -4,14 +4,14 @@ module SalesforceBulk
 
     attr :result
 
-    def initialize(operation, sobject, records, external_field, connection, serial)
+    def initialize(operation, sobject, records, external_field, connection, concurrency_mode)
 
       @@operation = operation
       @@sobject = sobject
       @@external_field = external_field
       @@records = records
       @@connection = connection
-      @@serial = serial
+      @@concurrency_mode = concurrency_mode
       @@XML_HEADER = '<?xml version="1.0" encoding="utf-8" ?>'
 
       # @result = {"errors" => [], "success" => nil, "records" => [], "raw" => nil, "message" => 'The job has been queued.'}
@@ -26,9 +26,7 @@ module SalesforceBulk
       if !@@external_field.nil? # This only happens on upsert
         xml += "<externalIdFieldName>#{@@external_field}</externalIdFieldName>"
       end
-      if @@serial
-        xml += "<concurrencyMode>Serial</concurrencyMode>"
-      end
+      xml += "<concurrencyMode>#{@@concurrency_mode}</concurrencyMode>"
       xml += "<contentType>CSV</contentType>"
       xml += "</jobInfo>"
 

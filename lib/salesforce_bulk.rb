@@ -11,33 +11,32 @@ module SalesforceBulk
 
     @@SALESFORCE_API_VERSION = '37.0'
 
-    def initialize(username, password, in_sandbox=false, is_serial = false)
+    def initialize(username, password, in_sandbox=false)
       @connection = SalesforceBulk::Connection.new(username, password, @@SALESFORCE_API_VERSION, in_sandbox)
-      @serial = is_serial
     end
 
-    def upsert(sobject, records, external_field, wait=false)
-      self.do_operation('upsert', sobject, records, external_field, wait)
+    def upsert(sobject, records, external_field, wait=false, concurrency_mode = 'Parallel')
+      self.do_operation('upsert', sobject, records, external_field, wait, concurrency_mode)
     end
 
-    def update(sobject, records, wait=false)
-      self.do_operation('update', sobject, records, nil, wait)
+    def update(sobject, records, wait=false, concurrency_mode = 'Parallel')
+      self.do_operation('update', sobject, records, nil, wait, concurrency_mode)
     end
     
-    def create(sobject, records, wait=false)
-      self.do_operation('insert', sobject, records, nil, wait)
+    def create(sobject, records, wait=false, concurrency_mode = 'Parallel')
+      self.do_operation('insert', sobject, records, nil, wait, concurrency_mode)
     end
 
-    def delete(sobject, records, wait=false)
-      self.do_operation('delete', sobject, records, nil, wait)
+    def delete(sobject, records, wait=false, concurrency_mode = 'Parallel')
+      self.do_operation('delete', sobject, records, nil, wait, concurrency_mode)
     end
 
-    def query(sobject, query)
-      self.do_operation('query', sobject, query, nil)
+    def query(sobject, query, concurrency_mode = 'Parallel')
+      self.do_operation('query', sobject, query, nil, concurrency_mode)
     end
 
-    def do_operation(operation, sobject, records, external_field, wait=false)
-      job = SalesforceBulk::Job.new(operation, sobject, records, external_field, @connection, @serial)
+    def do_operation(operation, sobject, records, external_field, wait=false, concurrency_mode)
+      job = SalesforceBulk::Job.new(operation, sobject, records, external_field, @connection, concurrency_mode)
 
       # TODO: put this in one function
       job_id = job.create_job()
