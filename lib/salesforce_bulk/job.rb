@@ -31,7 +31,7 @@ module SalesforceBulk
       xml += "</jobInfo>"
 
       path = "job"
-      headers = Hash['Content-Type' => 'application/xml; charset=utf-8']
+      headers = Hash['Content-Type' => 'application/xml; charset=utf-8', 'Sforce-auto-assign' => 'TRUE']
 
       response = @connection.post_xml(nil, path, xml, headers)
       response_parsed = @connection.parse_response response
